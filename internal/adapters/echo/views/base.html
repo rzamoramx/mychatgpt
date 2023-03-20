@@ -1,0 +1,215 @@
+{{define "base.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.css" rel="stylesheet" />
+
+  <title>MyChatGpt</title>
+</head>
+<body>
+  <!-- Barra superior -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <img src="ruta/al/logo.png" alt="MyChatGPT">
+      </a>
+      <!-- Botón para el menú de navegación en pantallas pequeñas -->
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Barra de navegación izquierda -->
+      <nav class="col-md-4 col-lg-3 d-none d-md-block bg-light sidebar">
+        <div class="sidebar-sticky">
+            <ul class="list-group" id="history_chats">
+                <li class="alert alert-info">Historial</li>
+                <li class="alert alert-info">
+                  <div class="d-flex justify-content-between">
+                    <div class="btn btn-primary" id="newChat">New Chat</div>
+                    <select id="gpt-model" class="form-select" aria-label="Default select example">
+                      <option selected value="1">gpt-3.5-turbo</option>
+                      <option value="2">gpt-4</option>
+                    </select>
+                  </div>
+                </li>
+
+                {{range $idx, $history := .Histories}}
+                <li id="{{$history.id}}" class="list-group-item"><i id="del{{$history.id}}" class="bi bi-sm bi-trash"></i>{{$history.name}}</li>
+                {{end}}
+            </ul>
+        </div>
+      </nav>
+
+      <!-- Marco contenedor -->
+      <main role="main" class="col-md-8 ml-sm-auto col-lg-9 pt-3 px-4">
+        <div class="container">
+          <!-- Agrega aquí el contenido que desees mostrar en la página -->
+          {{template "body" .}}
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- jQuery y Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+  {{template "js" .}}
+  <script>
+    var globalActualHistoryId = "";
+
+    // add clik event to all history chats, and delete event to all delete buttons too
+    {{range $idx, $history := .Histories}}
+      $('#{{$history.id}}').on('click', function() {
+        // clear chat-box
+        $("#chat-box").html("");
+        getMessages($(this).attr('id'));
+      });
+
+      $('#del{{$history.id}}').on('click', function() {
+        $.ajax({
+          url: "{{$.BaseUrl}}/v1/history/{{$history.id}}",
+          type: "DELETE",
+          contentType: "application/json; charset=utf-8",
+          dataType: "json",
+          success: function(data) {
+            // remove li from list
+            $('#{{$history.id}}').remove();
+            // clear chat-box
+            $("#chat-box").html("");
+            console.log(data);
+          },
+          failure: function(errMsg) {
+            console.log(errMsg);
+            alert(errMsg);
+          }
+        });
+      });
+    {{end}}
+
+    $(document).ready(function() {
+      $('#newChat').click(function() {
+        // ask for name of the new chat
+        var name = prompt("Please enter the name of the new chat", "New Chat");
+
+        $.ajax({
+          url: "{{.BaseUrl}}/v1/history",
+          type: "POST",
+          contentType: "application/json; charset=utf-8",
+          dataType: "json",
+          data: JSON.stringify({
+            "name": name
+          }),
+          success: function(data) {
+            globalActualHistoryId = data["id"];
+
+            $('#history_chats li').removeClass('active');
+            
+            var newLi = $('<li>').attr('id', data["id"]).addClass('list-group-item active').html('<i class="bi bi-sm bi-trash"></i>&nbsp; ' + name);
+            
+            $('#history_chats').append(newLi);
+            newLi.on('click', function() {
+              // clear chat-box
+              $("#chat-box").html("");
+              getMessages($(this).atter('id'));
+            });
+
+            // clean chat-box
+            $("#chat-box").html("");
+
+            console.log(data);
+          },
+          failure: function(errMsg) {
+            console.log(errMsg);
+            alert(errMsg);
+          }
+        });
+      });
+
+      $('#gpt-model').change(function() {
+        $.ajax({
+          url: "{{.BaseUrl}}/v1/chat/opeaimodel",
+          type: "PATCH",
+          contentType: "application/json; charset=utf-8",
+          dataType: "json",
+          data: JSON.stringify({
+            "open_ai_model": $(this).val()
+          }),
+          success: function(data) {
+            console.log(data);
+          },
+          failure: function(errMsg) {
+            console.log(errMsg);
+            alert(errMsg);
+          }
+        });
+      });
+
+      $("#gpt-model").val("{{.OpenAiModel}}");
+    });
+
+    // function that retrieve messages by globalActualHistoryId
+    function getMessages(idElement) {
+      globalActualHistoryId = idElement;
+      $.ajax({
+        url: "{{.BaseUrl}}/v1/history/" + globalActualHistoryId,
+        type: "GET",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(data) {
+          // set css class "active" to the selected chat
+          $('#history_chats li').removeClass('active');
+          $('#' + idElement).addClass('active');
+
+          // for data.messages append to chat-box
+          for (var i = 0; i < data.messages.length; i++) {
+            var message = data.messages[i];
+            if (message.from == "user") {
+              $("#chat-box").append(
+                '<div class="row">' +
+                '    <div class="col-2">&nbsp;</div>' +
+                '    <div class="col-10 text-right">' +
+                '        <div class="outgoing-message alert alert-success">' +
+                message.text +
+                '        </div>' +
+                '    </div>' +
+                '</div>'
+              );
+            } else {
+              $("#chat-box").append(
+                '<div class="row">' +
+                '    <div class="col-10 text-left">' +
+                '        <div class="incoming-message alert alert-primary">' +
+                message.text +
+                '        </div>' +
+                '    </div>' +
+                '    <div class="col-2">&nbsp;</div>' +
+                '</div>'
+              );
+            }
+          }
+        },
+        failure: function(errMsg) {
+          console.log(errMsg);
+          alert(errMsg);
+        }
+      });
+    }
+
+    $.getScript("https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js", function() {
+      Prism.highlightAll();
+    });
+  </script>
+</body>
+</html>
+{{end}}

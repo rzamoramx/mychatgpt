@@ -1,0 +1,75 @@
+{{define "js"}}
+<script>
+    $(document).ready(function() {
+        // To send messages
+        $("#send").click(function() {
+            var message = $("#textinput").val();
+
+            if (globalActualHistoryId == "") {
+                alert("Please create new chat");
+                return;
+            }
+
+            if (message != "") {
+                $("#send").html('<div class="spinner-border" role="status"><span class="sr-only"></span></div>');
+                $("#send").prop("disabled", true);
+
+                // Add message to chat box
+                $("#chat-box").append(
+                    '<div class="row">' +
+                    '    <div class="col-2">&nbsp;</div>' +
+                    '    <div class="col-10 text-right">' +
+                    '        <div class="outgoing-message alert alert-success">' +
+                    message +
+                    '        </div>' +
+                    '    </div>' +
+                    '</div>'
+                );
+                
+                // Scroll to end
+                $("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
+
+                // Send message to server
+                $.ajax({
+                    url: "{{.BaseUrl}}/v1/chat",
+                    type: "POST",
+                    data: JSON.stringify({history_id: globalActualHistoryId, message: message}),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(data) {
+                        // Agrega el mensaje del servidor al chat
+                        $("#chat-box").append(
+                            '<div class="row">' +
+                            '    <div class="col-10 text-left">' +
+                            '        <div class="incoming-message alert alert-primary">' +
+                            data.message +
+                            '        </div>' +
+                            '    </div>' +
+                            '    <div class="col-2">&nbsp;</div>' +
+                            '</div>'
+                        );
+
+                        // Clean text field
+                        $("#textinput").val("");
+
+                        // Scroll to end
+                        $("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
+
+                        $('#send').html('Send');
+                        $('#send').prop("disabled", false);
+                    },
+                    failure: function(errMsg) {
+                      console.log(errMsg);
+                      
+                      // alert to user and ask to retry
+                      alert("Error sending message. Please try again");
+
+                      $('#send').html('Send');
+                      $('#send').prop("disabled", false);
+                    }
+                });
+            }
+        });
+    });
+</script>
+{{end}}

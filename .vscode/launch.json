@@ -1,0 +1,22 @@
+{
+    // Use IntelliSense para saber los atributos posibles.
+    // Mantenga el puntero para ver las descripciones de los existentes atributos.
+    // Para más información, visite: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch Package",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${fileDirname}",
+            "env": {
+                "OPENAI_TOKEN": "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",
+                "MSGS_COLL_NAME": "my_chat_gpt_messages",
+                "HISTORY_COLL_NAME": "my_chat_gpt_history",
+                "OPENAI_MODEL": "gpt-4",
+                "BASE_URL": "http://localhost:8080"
+            }
+        }
+    ]
+}

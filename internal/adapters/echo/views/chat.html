@@ -1,0 +1,40 @@
+{{define "body"}}
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            Chat Box
+          </div>
+          <div class="card-body">
+            <div id="chat-box">
+              {{range $idx, $msg := .Messages}}
+                {{if even $idx}}
+                <div class="row">
+                    <div class="col-2">&nbsp;</div>
+                    <div class="col-10 text-right">
+                      <div class="outgoing-message alert alert-success">
+                        {{$msg}}
+                      </div>
+                    </div>
+                  </div>
+                {{else}}
+                  <div class="row">
+                    <div class="col-10 text-left">
+                      <div class="incoming-message alert alert-primary">
+                        {{$msg}}
+                      </div>
+                    </div>
+                    <div class="col-2">&nbsp;</div>
+                  </div>
+                {{end}}
+              {{end}}
+            </div>
+            <div class="form-group mt-3">
+              <textarea id="textinput" class="form-control" rows="3" placeholder="Write your message here"></textarea>
+              <button id="send" type="submit" class="btn btn-primary mt-2">Send</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+{{end}}
