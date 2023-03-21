@@ -14,8 +14,9 @@
 app.yaml
 .vscode/
 .idea
-.vscode/launch.json
 
+// ignore vscode launch.json
+.vscode/launch.json
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
