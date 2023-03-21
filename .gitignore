@@ -12,9 +12,9 @@
 *.out
 
 app.yaml
-.vscode
+.vscode/
 .idea
-launch.json
+.vscode/launch.json
 
 
 # Dependency directories (remove the comment below to include it)
