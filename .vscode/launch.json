@@ -11,7 +11,7 @@
             "mode": "auto",
             "program": "${fileDirname}",
             "env": {
-                "OPENAI_TOKEN": "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",
+                "OPENAI_MCG_TOKEN": "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",
                 "MSGS_COLL_NAME": "my_chat_gpt_messages",
                 "HISTORY_COLL_NAME": "my_chat_gpt_history",
                 "OPENAI_MODEL": "gpt-4",
