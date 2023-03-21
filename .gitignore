@@ -12,6 +12,10 @@
 *.out
 
 app.yaml
+.vscode
+.idea
+launch.json
+
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
