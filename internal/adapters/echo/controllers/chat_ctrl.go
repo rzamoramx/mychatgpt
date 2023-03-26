@@ -29,7 +29,7 @@ func (class *ChatCtrl) ChangeOpenAiModel(c echo.Context) error {
 	if request.OpenAiModel == "1" {
 		os.Setenv("OPENAI_MODEL", "gpt-3.5-turbo")
 	} else if request.OpenAiModel == "2" {
-		os.Setenv("OPENAI_MODEL", "gpt-4")
+		os.Setenv("OPENAI_MODEL", "code-davinci-002")
 	} else {
 		fmt.Println("CHAT -> CHANGE OPENAI MODEL: Invalid model: ", request.OpenAiModel)
 		return c.JSON(http.StatusBadRequest, "Invalid model")

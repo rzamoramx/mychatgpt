@@ -52,7 +52,7 @@ func (class *HistoryCtrl) Home(c echo.Context) error {
 	iaModel := "0"
 	if os.Getenv("OPENAI_MODEL") == "gpt-3.5-turbo" {
 		iaModel = "1"
-	} else if os.Getenv("OPENAI_MODEL") == "gpt-4" {
+	} else if os.Getenv("OPENAI_MODEL") == "code-davinci-002" {
 		iaModel = "2"
 	}
 
