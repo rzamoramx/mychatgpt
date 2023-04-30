@@ -14,6 +14,9 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gorilla/sessions"
+
+	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -25,6 +28,8 @@ type TemplateRegistry struct {
 
 func main() {
 	e := echo.New()
+
+	e.Use(session.Middleware(sessions.NewCookieStore([]byte("4h,7|Ch:JEWCUG:uMa59fR63z|hbUm"))))
 
 	// avoid this in production!!!
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
@@ -91,7 +96,11 @@ func registerFuncsAndTemplates() map[string]*template.Template {
 			wd+"/internal/adapters/echo/views/chat.html",
 			wd+"/internal/adapters/echo/views/chat_jquery.html",
 			wd+"/internal/adapters/echo/views/base.html"))
-	//templates["about.html"] = template.Must(template.ParseFiles("view/about.html", "view/base.html"))
+
+	templates["login.html"] = template.Must(
+		template.ParseFiles(
+			wd+"/internal/adapters/echo/views/login.html",
+			wd+"/internal/adapters/echo/views/base_login.html"))
 
 	return templates
 }
@@ -108,7 +117,7 @@ func wireUp(e *echo.Echo) {
 	}
 
 	// Firestore
-	fsc, err := firestore.NewFirestoreClient(os.Getenv("MSGS_COLL_NAME"), os.Getenv("HISTORY_COLL_NAME"))
+	fsc, err := firestore.NewFirestoreClient(os.Getenv("MSGS_COLL_NAME"), os.Getenv("HISTORY_COLL_NAME"), os.Getenv("USERS_COLL_NAME"))
 	if err != nil {
 		panic(err.Error())
 	}

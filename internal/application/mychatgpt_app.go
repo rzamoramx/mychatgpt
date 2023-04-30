@@ -101,3 +101,12 @@ func (class *MyChatGptApp) GetHistoryMessages(historyId string) ([]map[string]st
 
 	return toReturn, nil
 }
+
+func (class *MyChatGptApp) MakeLogin(username string, pwd string) (string, error) {
+	user, err := class.persister.GetUser(username, pwd)
+	if err != nil {
+		return "", err
+	}
+
+	return user.Id, nil
+}

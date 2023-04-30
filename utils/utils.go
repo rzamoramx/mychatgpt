@@ -1,6 +1,12 @@
 package utils
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/gorilla/sessions"
+	"github.com/labstack/echo-contrib/session"
+	"github.com/labstack/echo/v4"
+)
 
 func DetectLanguage(text string) string {
 	// list of programming languages
@@ -40,4 +46,13 @@ func DetectLanguage(text string) string {
 	}
 
 	return ""
+}
+
+func GetSession(c echo.Context) (*sessions.Session, error) {
+	sess, err := session.Get("session", c)
+	if err != nil {
+		return nil, err
+	}
+
+	return sess, nil
 }

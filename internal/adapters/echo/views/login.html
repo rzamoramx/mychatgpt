@@ -1,0 +1,29 @@
+{{define "body"}}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                Login
+            </div>
+            <div class="card-body">
+                <!--<div class="form-group mt-3">-->
+                <div class="container-fluid">
+                    <form action="{{.BaseUrl}}/v1/login" method="post">
+                        <div class="row">
+                            <div class="col-md-5"><label>Usuario:</label></div>
+                            <div class="col-md-5"><input name="user" type="text" name="usuario"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5"><label>Contraseña:</label></div>
+                            <div class="col-md-5"><input name="pwd" type="password" name="contraseña"></div>
+                        </div>
+                        <div class="row">
+                            <button type="submit" class="btn btn-primary mt-2">Login</button>
+                        </div>
+                    </form> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{end}}

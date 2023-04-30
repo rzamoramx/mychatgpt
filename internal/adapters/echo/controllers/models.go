@@ -1,5 +1,10 @@
 package controllers
 
+type RequestLogin struct {
+	User     string `json:"user"`
+	Password string `json:"pwd"`
+}
+
 type RequestNewMessage struct {
 	HistoryId string `json:"history_id"`
 	Message   string `json:"message"`

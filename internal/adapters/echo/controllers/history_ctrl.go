@@ -42,6 +42,16 @@ func (class *HistoryCtrl) Home(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, "Error getting app")
 	}
 
+	session, err := utils.GetSession(c)
+	if err != nil {
+		return err
+	}
+
+	username, ok := session.Values["username"].(string)
+	if !ok {
+		return c.Redirect(http.StatusSeeOther, "/v1/login")
+	}
+
 	// get all history
 	histories, err := app.RetrieveAllHistories()
 	if err != nil {
@@ -61,6 +71,7 @@ func (class *HistoryCtrl) Home(c echo.Context) error {
 		"Messages":    []string{},
 		"BaseUrl":     os.Getenv("BASE_URL"),
 		"OpenAiModel": iaModel,
+		"Username":    username,
 	}
 
 	for _, history := range histories {

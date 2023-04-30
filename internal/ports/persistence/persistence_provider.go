@@ -10,4 +10,5 @@ type PersistenceProvider interface {
 	SaveMessage(message domain.Message) error
 	GetMessagesByHistoryId(historyId string, order string, limit int) ([]domain.Message, error)
 	DeleteHistory(historyId string) error
+	GetUser(username string, pwd string) (domain.User, error)
 }

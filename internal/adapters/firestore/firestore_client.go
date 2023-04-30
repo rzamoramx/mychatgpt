@@ -16,13 +16,14 @@ type FirestoreCLient struct {
 	Ctx         context.Context
 	MsgsColl    string
 	HistoryColl string
+	UsersColl   string
 
 	// internal use
 	fs *firestore.Client
 }
 
-func NewFirestoreClient(msgsColl string, historyColl string) (any, error) {
-	if msgsColl == "" || historyColl == "" {
+func NewFirestoreClient(msgsColl string, historyColl string, usersColl string) (any, error) {
+	if msgsColl == "" || historyColl == "" || usersColl == "" {
 		return FirestoreCLient{}, errors.New("messages or History collections name are empty")
 	}
 
@@ -38,6 +39,7 @@ func NewFirestoreClient(msgsColl string, historyColl string) (any, error) {
 		Ctx:         ctx,
 		MsgsColl:    msgsColl,
 		HistoryColl: historyColl,
+		UsersColl:   usersColl,
 		fs:          client,
 	}, nil
 }
@@ -161,4 +163,29 @@ func (class *FirestoreCLient) GetMessagesByHistoryId(historyId string, order str
 	}
 
 	return messages, nil
+}
+
+func (class *FirestoreCLient) GetUser(username string, pwd string) (domain.User, error) {
+	if username == "" || pwd == "" {
+		return domain.User{}, errors.New("username or pwd is empty")
+	}
+
+	query := class.fs.Collection(class.UsersColl).Where("username", "==", username).Where("pwd", "==", pwd)
+
+	docs, err := query.Documents(class.Ctx).GetAll()
+	if err != nil {
+		return domain.User{}, fmt.Errorf("error on query: %v", err)
+	}
+
+	if len(docs) == 0 {
+		return domain.User{}, errors.New("user not found")
+	}
+
+	user := domain.User{}
+	err = docs[0].DataTo(&user)
+	if err != nil {
+		return domain.User{}, err
+	}
+
+	return user, nil
 }
