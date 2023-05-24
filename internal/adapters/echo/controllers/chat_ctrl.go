@@ -26,11 +26,15 @@ func (class *ChatCtrl) ChangeOpenAiModel(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, "Error binding body")
 	}
 
-	if request.OpenAiModel == "1" {
+	// swith model
+	switch request.OpenAiModel {
+	case "1":
 		os.Setenv("OPENAI_MODEL", "gpt-3.5-turbo")
-	} else if request.OpenAiModel == "2" {
-		os.Setenv("OPENAI_MODEL", "code-davinci-002")
-	} else {
+	case "2":
+		os.Setenv("OPENAI_MODEL", "davinci")
+	case "3":
+		os.Setenv("OPENAI_MODEL", "gpt-4")
+	default:
 		fmt.Println("CHAT -> CHANGE OPENAI MODEL: Invalid model: ", request.OpenAiModel)
 		return c.JSON(http.StatusBadRequest, "Invalid model")
 	}
