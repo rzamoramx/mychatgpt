@@ -68,7 +68,7 @@ func (c *OpenaiClient) GetAnswer(params map[string]string, oldMessages []domain.
 
 	// prepare request
 	data := RequestToAOpenAi{
-		Model:     os.Getenv("OPENAI_MODEL"), // "gpt-4", "gpt-3.5-turbo",
+		Model:     os.Getenv("OPENAI_MODEL"), // "gpt-4-1106-preview", "gpt-4", "gpt-3.5-turbo",
 		MaxTokens: 3000,
 		Msgs:      msgs,
 	}

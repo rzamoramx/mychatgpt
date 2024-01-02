@@ -34,6 +34,8 @@ func (class *ChatCtrl) ChangeOpenAiModel(c echo.Context) error {
 		os.Setenv("OPENAI_MODEL", "davinci")
 	case "3":
 		os.Setenv("OPENAI_MODEL", "gpt-4")
+	case "4":
+		os.Setenv("OPENAI_MODEL", "gpt-4-1106-preview")
 	default:
 		fmt.Println("CHAT -> CHANGE OPENAI MODEL: Invalid model: ", request.OpenAiModel)
 		return c.JSON(http.StatusBadRequest, "Invalid model")
