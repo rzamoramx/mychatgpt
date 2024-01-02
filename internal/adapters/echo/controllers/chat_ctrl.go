@@ -41,7 +41,7 @@ func (class *ChatCtrl) ChangeOpenAiModel(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, "Invalid model")
 	}
 
-	fmt.Println("CHAT -> CHANGE OPENAI MODEL: Model changed")
+	fmt.Println("CHAT -> CHANGE OPENAI MODEL: Model changed to: ", os.Getenv("OPENAI_MODEL"))
 	return c.JSON(http.StatusOK, "Model changed")
 }
 
