@@ -164,7 +164,7 @@
 
       $('#gpt-model').change(function () {
         $.ajax({
-          url: "{{.BaseUrl}}/v1/chat/opeaimodel",
+          url: "{{.BaseUrl}}/v1/chat/openaimodel",
           type: "PATCH",
           contentType: "application/json; charset=utf-8",
           dataType: "json",

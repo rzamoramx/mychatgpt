@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 
+	"my_chat_gpt/configs"
 	"my_chat_gpt/internal/application"
 	"my_chat_gpt/utils"
 
@@ -59,12 +60,13 @@ func (class *HistoryCtrl) Home(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, "Error getting histories")
 	}
 
+	//TODO make this based on session not global
 	iaModel := "0"
-	if os.Getenv("OPENAI_MODEL") == "gpt-4o" {
+	if configs.OPENAI_MODEL == "gpt-4o" {
 		iaModel = "1"
-	} else if os.Getenv("OPENAI_MODEL") == "gpt-4o-mini" {
+	} else if configs.OPENAI_MODEL == "gpt-4o-mini" {
 		iaModel = "2"
-	} else if os.Getenv("OPENAI_MODEL") == "gpt-4-turbo" {
+	} else if configs.OPENAI_MODEL == "gpt-4-turbo" {
 		iaModel = "3"
 	}
 

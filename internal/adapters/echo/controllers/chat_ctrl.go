@@ -3,7 +3,6 @@ package controllers
 import (
 	"fmt"
 	"net/http"
-	"os"
 	"strings"
 
 	"my_chat_gpt/configs"
@@ -27,6 +26,7 @@ func (class *ChatCtrl) ChangeOpenAiModel(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, "Error binding body")
 	}
 
+	//TODO make this based on session not global
 	// swith model
 	switch request.OpenAiModel {
 	case "1":
@@ -40,7 +40,7 @@ func (class *ChatCtrl) ChangeOpenAiModel(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, "Invalid model")
 	}
 
-	fmt.Println("CHAT -> CHANGE OPENAI MODEL: Model changed to: ", os.Getenv("OPENAI_MODEL"))
+	fmt.Println("CHAT -> CHANGE OPENAI MODEL: Model changed to: ", configs.OPENAI_MODEL)
 	return c.JSON(http.StatusOK, "Model changed")
 }
 

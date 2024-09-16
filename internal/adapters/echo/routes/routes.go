@@ -14,7 +14,7 @@ func Boostrap(e *echo.Echo) error {
 	sessionCtrlV1 := controllers.NewSessionCtrl()
 
 	v1 := e.Group("/v1")
-	v1.PATCH("/chat/opeaimodel", chatCtrlV1.ChangeOpenAiModel)
+	v1.PATCH("/chat/openaimodel", chatCtrlV1.ChangeOpenAiModel)
 	v1.GET("/home", historyCtrlV1.Home, authMiddleware)
 	v1.POST("/chat", chatCtrlV1.ReceiveMessage)
 	v1.POST("/history", historyCtrlV1.New)
