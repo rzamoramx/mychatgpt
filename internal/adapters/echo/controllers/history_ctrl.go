@@ -60,10 +60,12 @@ func (class *HistoryCtrl) Home(c echo.Context) error {
 	}
 
 	iaModel := "0"
-	if os.Getenv("OPENAI_MODEL") == "gpt-3.5-turbo" {
+	if os.Getenv("OPENAI_MODEL") == "gpt-4o" {
 		iaModel = "1"
-	} else if os.Getenv("OPENAI_MODEL") == "code-davinci-002" {
+	} else if os.Getenv("OPENAI_MODEL") == "gpt-4o-mini" {
 		iaModel = "2"
+	} else if os.Getenv("OPENAI_MODEL") == "gpt-4-turbo" {
+		iaModel = "3"
 	}
 
 	toRender := map[string]interface{}{

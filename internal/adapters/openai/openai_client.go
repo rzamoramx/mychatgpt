@@ -64,11 +64,18 @@ func (c *OpenaiClient) GetAnswer(params map[string]string, oldMessages []domain.
 		})
 	}
 
-	fmt.Printf("What model we are using: %s\n", os.Getenv("OPENAI_MODEL"))
+	var model string
+	if os.Getenv("OPENAI_MODEL") == "" {
+		model = configs.OPENAI_MODEL
+	} else {
+		model = os.Getenv("OPENAI_MODEL")
+	}
+
+	fmt.Printf("What model we are using: %s\n", model)
 
 	// prepare request
 	data := RequestToAOpenAi{
-		Model:     configs.OPENAI_MODEL,
+		Model:     model,
 		MaxTokens: 3000,
 		Msgs:      msgs,
 	}

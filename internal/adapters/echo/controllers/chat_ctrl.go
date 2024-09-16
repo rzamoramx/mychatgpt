@@ -30,13 +30,11 @@ func (class *ChatCtrl) ChangeOpenAiModel(c echo.Context) error {
 	// swith model
 	switch request.OpenAiModel {
 	case "1":
-		configs.OPENAI_MODEL = "gpt-3.5-turbo"
+		configs.OPENAI_MODEL = "gpt-4o"
 	case "2":
-		configs.OPENAI_MODEL = "davinci"
+		configs.OPENAI_MODEL = "gpt-4o-mini"
 	case "3":
-		configs.OPENAI_MODEL = "gpt-4"
-	case "4":
-		configs.OPENAI_MODEL = "gpt-4-1106-preview"
+		configs.OPENAI_MODEL = "gpt-4-turbo"
 	default:
 		fmt.Println("CHAT -> CHANGE OPENAI MODEL: Invalid model: ", request.OpenAiModel)
 		return c.JSON(http.StatusBadRequest, "Invalid model")
