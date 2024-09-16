@@ -5,11 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"my_chat_gpt/configs"
 	"my_chat_gpt/internal/domain"
 	"net/http"
-	"os"
 )
 
 type OpenaiClient struct {
@@ -64,18 +63,11 @@ func (c *OpenaiClient) GetAnswer(params map[string]string, oldMessages []domain.
 		})
 	}
 
-	var model string
-	if os.Getenv("OPENAI_MODEL") == "" {
-		model = configs.OPENAI_MODEL
-	} else {
-		model = os.Getenv("OPENAI_MODEL")
-	}
-
-	fmt.Printf("What model we are using: %s\n", model)
+	fmt.Printf("What model we are using: %s\n", configs.OPENAI_MODEL)
 
 	// prepare request
 	data := RequestToAOpenAi{
-		Model:     model,
+		Model:     configs.OPENAI_MODEL,
 		MaxTokens: 3000,
 		Msgs:      msgs,
 	}
@@ -101,7 +93,7 @@ func (c *OpenaiClient) GetAnswer(params map[string]string, oldMessages []domain.
 
 	// read request
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println(err)
 		return "", err
@@ -115,7 +107,7 @@ func (c *OpenaiClient) GetAnswer(params map[string]string, oldMessages []domain.
 
 	fmt.Println(string(body))
 
-	if result.Choices == nil || len(result.Choices) == 0 {
+	if len(result.Choices) == 0 {
 		return "", fmt.Errorf("no choices returned from openai")
 	}
 

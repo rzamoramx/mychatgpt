@@ -8,7 +8,7 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.css" rel="stylesheet" />
 
   <title>MyChatGpt</title>
 </head>
@@ -64,8 +64,7 @@
             </li>
 
             {{range $idx, $history := .Histories}}
-            <li id="{{$history.id}}" class="list-group-item"><i id="del{{$history.id}}"
-                class="bi bi-sm bi-trash"></i>{{$history.name}}</li>
+            <li id="{{.id}}" class="list-group-item"><i id="del{{.Id}}" class="bi bi-sm bi-trash"></i>{{.name}}</li>
             {{end}}
           </ul>
         </div>
@@ -90,14 +89,14 @@
     var globalActualHistoryId = "";
 
     // add clik event to all history chats, and delete event to all delete buttons too
-    { {range $idx, $history := .Histories } }
-    $('#{{$history.id}}').on('click', function () {
+    {{range $idx, $history := .Histories}}
+    $('#{{.id}}').on('click', function () {
       // clear chat-box
       $("#chat-box").html("");
       getMessages($(this).attr('id'));
     });
 
-    $('#del{{$history.id}}').on('click', function () {
+    $('#del{{.id}}').on('click', function () {
       // ask confirmation before delete
       var r = confirm("Estas seguro de borrar este chat?");
       if (r == false) {
@@ -105,13 +104,13 @@
       }
 
       $.ajax({
-        url: "{{$.BaseUrl}}/v1/history/{{$history.id}}",
+        url: "{{$.BaseUrl}}/v1/history/{{.id}}",
         type: "DELETE",
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (data) {
           // remove li from list
-          $('#{{$history.id}}').remove();
+          $('#{{.id}}').remove();
           // clear chat-box
           $("#chat-box").html("");
           console.log(data);
@@ -122,7 +121,7 @@
         }
       });
     });
-    { { end } }
+    {{end}}
 
     $(document).ready(function () {
       $('#newChat').click(function () {
@@ -148,7 +147,7 @@
             newLi.on('click', function () {
               // clear chat-box
               $("#chat-box").html("");
-              getMessages($(this).atter('id'));
+              getMessages($(this).attr('id'));
             });
 
             // clean chat-box
@@ -233,7 +232,7 @@
       });
     }
 
-    $.getScript("https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js", function () {
+    $.getScript("https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js", function () {
       Prism.highlightAll();
     });
   </script>
